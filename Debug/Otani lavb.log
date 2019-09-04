@@ -1,0 +1,5 @@
+﻿  Flower.cpp
+  FlowerSet.cpp
+  コードを生成中...
+C:\Users\Sora Yamaguchi\Desktop\Otani lavb\Flower.cpp(149): warning C4172:  ローカル変数またはテンポラリのアドレスを返します: borderprob
+  Otani lavb.vcxproj -> C:\Users\Sora Yamaguchi\Desktop\Otani lavb\Debug\Otani lavb.exe
