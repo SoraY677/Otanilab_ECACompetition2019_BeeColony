@@ -20,17 +20,15 @@ Flower::Flower(FlowerSet* argFSet)
 
 	//移転確率を求める
 	datastore->moveProb = 1 / (1 + exp(-0.1 * ((double)datastore->subsidy / (double)datastore->para->subsidyLevelNum * datastore->para->subsidyMax) + 5));
-	
+
 	//各ゾーンの施設生成確率を求める
 	facilitygeneprobtmp = calcFacilityGeneProb();
-	
 
 	//HACK:こうしないとメモリが破壊される！！！
 	facilitygeneprobtmp2[0] = facilitygeneprobtmp[0];
 	facilitygeneprobtmp2[1] = facilitygeneprobtmp[1];
 
 	for (int i = 0; i < datastore->para->zoneVNum; i++) {
-		//printf("%f,%f\n", facilitygeneprobtmp[0], facilitygeneprobtmp[1]);
 		datastore->facility[i] = new int[datastore->para->zoneHNum];
 		datastore->housePop[i] = new int[datastore->para->zoneHNum];
 		datastore->facilityPop[i] = new double[datastore->para->zoneHNum];
@@ -95,7 +93,7 @@ double* Flower::calcFacilityGeneProb() {
 
 	//都心ゾーンの重みを求める
 	townareaweight = townarearesidentprob * (1.0 - datastore->para->receiveRatio);
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 2; i++) {
 		switch (i){
 		case 0:
 			//-----------移動時間におけるボーダーを求める
@@ -128,12 +126,6 @@ double* Flower::calcFacilityGeneProb() {
 				borderprobtmp[1] = (borderprobtmp[0] - 1) * datastore->centerZoneNum / datastore->surroundingZoneNum
 					+ borderprobtmp[1];
 			}
-			//printf("%f,%f\n", borderprobtmp[0], borderprobtmp[1]);
-			break;
-		case 2:
-			borderprobtmp[0] = 1 - datastore->refervalue;
-			borderprobtmp[1] = datastore->refervalue;
-			//printf("%f,%f\n", borderprobtmp[0], borderprobtmp[1]);
 			break;
 		}
 		
@@ -142,7 +134,7 @@ double* Flower::calcFacilityGeneProb() {
 		
 	}
 
-	//ガウス分布を用いた施設生成確率の算出
+	//施設生成確率の決定()
 	borderprob[0] = borderprob[0] + datastore->refervalue * townareaweight;
 	borderprob[1] = borderprob[1] + (1 - datastore->refervalue) * townareaweight;
 
@@ -189,8 +181,8 @@ void Flower::renew()
 
    for (i = 0; i < datastore->para->zoneVNum; i++) {
 	   for (j = 0; j < datastore->para->zoneHNum; j++) {
-		   if (rand() < (R_CONSIDER_FACILITY + 0.00001 * fSet->tryNum) * RAND_MAX ) {
-			   if (rand() > RAND_MAX * 0.1)datastore->facility[i][j] = 0;
+		   if (rand() < (R_CONSIDER_FACILITY + 0.0001 * fSet->tryNum) * RAND_MAX ) {
+			   if (rand() > RAND_MAX * datastore->refervalue) datastore->facility[i][j] = 0;
 			   else datastore->facility[i][j] = 1;
 		   }
 	   }
@@ -210,7 +202,7 @@ void Flower::evaluate()
 	double oneDayPop;
 
 	datastore->moveProb = 1 / (1 + exp(-0.1 * ((double)datastore->subsidy / (double)datastore->para->subsidyLevelNum * datastore->para->subsidyMax) + 5));
-
+	
 	// 施設数の算出
 	datastore->facilityNum = 0;
 	for (i = 0; i < datastore->para->zoneVNum; i++) {
@@ -361,30 +353,4 @@ void Flower::evaluate()
 			}
 		}
 	}
-}
-
-// 結果書込み
-void Flower::writeResult()
-{
-	int i, j;
-	FILE* resultFP;
-	double subsidyOne;
-
-	// ファイルオープン
-	if ((resultFP = fopen("result.csv", "w")) == NULL) {
-		printf("Cannot open result.txt for output.\n");
-		exit(1);
-	}
-
-	// 書込み
-	subsidyOne = (double)datastore->subsidy / (double)datastore->para->subsidyLevelNum * datastore->para->subsidyMax;
-	fprintf(resultFP, "%.0lf\n", subsidyOne);
-	for (j = 0; j < datastore->para->zoneVNum; j++) {
-		for (i = 0; i < datastore->para->zoneHNum; i++)
-			fprintf(resultFP, "%d,", datastore->facility[j][i]);
-		fprintf(resultFP, "\n");
-	}
-
-	// ファイルクローズ
-	fclose(resultFP);
 }

@@ -1,7 +1,7 @@
 #include "FlowerSet.h"
 #include "time.h"
 
-#define TRIAL_NUM 3
+#define TRIAL_NUM 10//DELETE AFTER
 
 int main()
 {
@@ -10,11 +10,9 @@ int main()
    clock_t start_c, stop_c;
 
    srand((unsigned int)time(NULL));
-
-   printf("âÒêî,åvë™éûä‘,ç≈ó«íl\n");
    
-   for (int trial = 0; trial < TRIAL_NUM; trial++) {
-	   start_c = clock();
+   for (int trial = 0; trial < TRIAL_NUM; trial++) {//DELETE AFTER
+	   start_c = clock();//DELETE AFTER
 
 	   fSet = new FlowerSet();
 	   for (i = 1; i <= REPEAT_NUM; i++) {
@@ -24,11 +22,11 @@ int main()
 		   fSet->saveBestPos();
 		   fSet->tryNum++;
 	   }
-	   stop_c = clock();
-	   printf("%d,%f,%f\n",trial+1, (double)(stop_c - start_c) / CLOCKS_PER_SEC,fSet->bestfitness);
 
-   }
-   fSet->printResult();
+	   stop_c = clock();//DELETE AFTER
+	   fSet->printResult(trial+1,(double)(stop_c-start_c)/CLOCKS_PER_SEC);//DELETE AFTER
+   }//DELETE AFTER
+   
    delete fSet;
 
    return 0;

@@ -15,7 +15,7 @@ public:
    void onlookerBeePhase();  // 追従バチフェーズを実行する
    void scoutBeePhase();     // 偵察バチフェーズを実行する
    void saveBestPos();       // 最良食糧源を記録する
-   void printResult();       // 結果を表示する
+   void printResult(int trial,double timer);       // 結果を表示する
 
    Flower **flower;          // 食糧源の集合のメンバ
    int **bestfacility;      // 最良食糧源の位置

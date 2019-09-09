@@ -1,7 +1,6 @@
 #include "FlowerSet.h"
 
 // コンストラクタ
-// fileName: データセットのファイル名
 FlowerSet::FlowerSet()
 {
    int i,j, best;
@@ -142,15 +141,37 @@ void FlowerSet::saveBestPos()
 }
 
 // 結果を表示する
-void FlowerSet::printResult()
+void FlowerSet::printResult(int trialnum,double timer)
 {
-	int i, best=-1;
-	double bestfitness = DBL_MAX;
+	int i, j, best=-1;
+	FILE* resultFP;
+	double subsidyOne;
+	int facilitynum = 0;
 
-	for (i = 0; i < EBEE_NUM; i++) {
-		if (bestfitness > flower[i]->datastore->fitness)
-			best = i;
+	// ファイルオープン
+	if ((resultFP = fopen("result.csv", "w")) == NULL) {
+		printf("Cannot open result.txt for output.\n");
+		exit(1);
 	}
 
-	flower[best]->writeResult();
+	// 書込み
+	subsidyOne = bestsubsidy / (double)DataStore::para->subsidyLevelNum * DataStore::para->subsidyMax;
+	fprintf(resultFP, "%.0lf\n", subsidyOne);
+	for (j = 0; j < DataStore::para->zoneVNum; j++) {
+		for (i = 0; i < DataStore::para->zoneHNum; i++)
+			fprintf(resultFP, "%d,", bestfacility[j][i]);
+		fprintf(resultFP, "\n");
+	}
+
+	// ファイルクローズ
+	fclose(resultFP);
+
+	for (int vx = 0; vx < DataStore::para->zoneVNum; vx++) {
+		for (int vy = 0; vy < DataStore::para->zoneHNum; vy++) {
+			if (bestfacility[vx][vy])facilitynum++;
+		}
+	}
+
+	//DELETE AFTER
+	printf("%d,%f,%f,%.0lf,%d\n", trialnum, timer, bestfitness,subsidyOne,facilitynum);
 }

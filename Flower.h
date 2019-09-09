@@ -28,8 +28,6 @@ public:
     void change(int base); // 近くの食糧源に変更する
     void renew();          // 新しい食糧源に変更する
 
-	void writeResult();
-
     FlowerSet *fSet;       // 属している食糧源集合
     int visitNum;          // 蜜の採取回数
 
