@@ -62,5 +62,5 @@
 
 
 # 動作環境
-Visual Studio 2019にて開発
+Visual Studio 2019にて開発  
 `git clone`の後，プロジェクトのプロパティ＞C/C++>プリプロセッサの一番上に`_CRT_SECURE_NO_WARNINGS`を入力する必要あり．
